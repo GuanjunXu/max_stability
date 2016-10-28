@@ -1,0 +1,8 @@
+com.lvr.launcher        com.lvr.launcher/com.lvr.launcher.VRLauncherActivity
+com.lvr.player          com.lvr.player/com.lvr.player.activity.LocalVideoLoadActivity
+com.lvr.gamecenter      com.lvr.gamecenter/com.lvr.gamecenter.activity.GameCenterMainActivity
+com.lvr.gallery         com.lvr.gallery/com.lvr.gallery.LvrGalleryActivity
+com.lvr.settings        com.lvr.settings/com.lvr.settings.SettingsActivity
+com.lvr.superlvrpro     com.lvr.superlvrpro/com.lvr.superlvrpro.vr.VRChannelActivity
+com.lvr.passthrough     com.lvr.passthrough/com.lvr.passthrough.Camera2RenderscriptActivity
+com.lvr.pay
