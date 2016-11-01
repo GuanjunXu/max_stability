@@ -7,7 +7,7 @@ import time
 import commands
 import random
 
-deviceId = ''
+deviceId = '43adc807'
 d = Device(deviceId)
 
 screen_x = 2560
@@ -47,16 +47,16 @@ class UnityTest(unittest.TestCase):
 
     def setUp(self):
         super(UnityTest, self).setUp()
-        # commands.getoutput('adb shell ls /data/local/tmp')
-        commands.getoutput('adb shell touch /data/local/tmp/LVR_MONKEY_TEST')
-        commands.getoutput('adb shell touch /sdcard/LVR_MONKEY_TEST')
+        # commands.getoutput('adb -s 43adc807 shell ls /data/local/tmp')
+        commands.getoutput('adb -s 43adc807 shell touch /data/local/tmp/LVR_MONKEY_TEST')
+        commands.getoutput('adb -s 43adc807 shell touch /sdcard/LVR_MONKEY_TEST')
         self.start_time = int(time.time())
         print 'start: \t%s'%(time.strftime('%Y%m%d_%H%M%S',time.localtime(self.start_time)))
 
     def tearDown(self):
         super(UnityTest, self).tearDown()
         end_time = int(time.time())
-        commands.getoutput('adb shell /system/bin/screencap -p /sdcard/%s.png'%(end_time))
+        commands.getoutput('adb -s 43adc807 shell /system/bin/screencap -p /sdcard/%s.png'%(end_time))
         duration = end_time - self.start_time
         print 'End at %s'%end_time
         print 'Duration %ss'%(duration)
@@ -66,12 +66,12 @@ class UnityTest(unittest.TestCase):
             os.makedirs(str_path)
         except:
             pass
-        commands.getoutput('adb shell logcat -v time -d > %s/0_logcat_%s.txt'%(str_path,str(int(end_time))))
-        commands.getoutput('adb bugreport > %s/0_bugreport.log'%str_path)
-        commands.getoutput('adb pull /sdcard/%s.png %s/%s'%(end_time,os.getcwd(),str_path))
+        commands.getoutput('adb -s 43adc807 shell logcat -v time -d > %s/0_logcat_%s.txt'%(str_path,str(int(end_time))))
+        commands.getoutput('adb -s 43adc807 bugreport > %s/0_bugreport.log'%str_path)
+        commands.getoutput('adb -s 43adc807 pull /sdcard/%s.png %s/%s'%(end_time,os.getcwd(),str_path))
 
     # def goVRLauncher(self):
-    #     commands.getoutput('adb shell am start -n com.lvr.launcher/.VRLauncherActivity --es pkgName com.lvr.wizzard')
+    #     commands.getoutput('adb -s 43adc807 shell am start -n com.lvr.launcher/.VRLauncherActivity --es pkgName com.lvr.wizzard')
     #     time.sleep(5)
     #     assert d(packageName = 'com.lvr.launcher').wait.exists(timeout = 3000)
 
@@ -98,7 +98,7 @@ class UnityTest(unittest.TestCase):
     def goVRApp(self, app):
         self.CASE_NOW = app
         print "Testing app: %s"%self.CASE_NOW,
-        commands.getoutput('adb shell am start -n %s'%apps[app][1])
+        commands.getoutput('adb -s 43adc807 shell am start -n %s'%apps[app][1])
         time.sleep(10)
         assert d(packageName = apps[app][0]).wait.exists()
 
@@ -201,7 +201,9 @@ class UnityTest(unittest.TestCase):
                 time.sleep(300)
                 print "\t ... Installing game ..."
                 d.click(750,660)
-                time.sleep(60)
+                time.sleep(30)
+                for i in range(10):
+                    d.press('back')
             self.exitVRApp('game_center')
             # 乐视界看全景视频
             self.goVRApp('super_lvr')
