@@ -61,7 +61,7 @@ class UnityTest(unittest.TestCase):
         print 'End at %s'%end_time
         print 'Duration %ss'%(duration)
         print '\t ... end at %s time(s)'%(self.CYCLE_NOW)
-        str_path = 'max_eui_st_test_end_at_%s_times_from_%s_to_%s'%(self.CYCLE_NOW,self.start_time,end_time)
+        str_path = 'max_eui_st_test_end_at_%s_from_%s_to_%s'%(self.CYCLE_NOW,self.start_time,end_time)
         try:
             os.makedirs(str_path)
         except:
@@ -103,7 +103,7 @@ class UnityTest(unittest.TestCase):
         assert d(packageName = apps[app][0]).wait.exists()
 
     def exitVRApp(self, app):
-        assert d(packageName = apps[app][0]).wait.exists()
+        # assert d(packageName = apps[app][0]).wait.exists()
         i = 0
         print "\t ... exit %s ... "%app,
         while d(packageName = apps[app][0]).wait.exists():
@@ -186,50 +186,37 @@ class UnityTest(unittest.TestCase):
             time.sleep(5)
             d.click(650,600)
             time.sleep(60)
-            d.press('back')
-            d.press('back')
-            d.press('back')
+            self.exitVRApp('local_video')
             # 看全景视频
+            self.goVRApp('local_video')
             d.click(750,710)
             time.sleep(5)
             d.click(650,600)
             time.sleep(60)
             self.exitVRApp('local_video')
-            # 安装游戏
-            # 进入游戏
-            self.goVRApp('game_center')
-            d.click(640,840) # Only this one could exit by double click on back key
-            time.sleep(5)
-            d.click(750,660)
-            # if i == 0:
-            #     time.sleep(300)
-            #     print "\t ... Installing game ..."
-            #     d.click(750,660)
-            time.sleep(60)
-            d.press('back')
-            d.press('back')
-            self.exitVRApp('game_center')
+            # 安装游戏 进入游戏
+            # self.goVRApp('game_center')
+            # d.click(640,840) # Only this one could exit by double click on back key
+            # time.sleep(5)
+            # d.click(750,660)
+            # # if i == 0:
+            # #     time.sleep(300)
+            # #     print "\t ... Installing game ..."
+            # #     d.click(750,660)
+            # time.sleep(60)
+            # d.press('back')
+            # d.press('back')
+            # self.exitVRApp('game_center')
             # 乐视界看全景视频
             self.goVRApp('super_lvr')
-            d.click(640,640)
-            time.sleep(60)
-            d.click(640,640) # Fullscreen
-            time.sleep(60)
-            d.press('back') # Exit fullscreen
-            d.press('back') # Exit to home in super pro
-            # 乐视界看3D视频
-            time.sleep(5)
-            d.swipe(640,640,1940,640)
-            time.sleep(5)
-            d.click(640,640) # Enter player
-            time.sleep(60)
-            d.click(640,640) # Fullscreen
+            d.click(400,600)
             time.sleep(60)
             self.exitVRApp('super_lvr')
-            # 看外面
-            # self.goVRApp('pass_through')
-            # time.sleep(60)
-            # self.exitVRApp('pass_through')
-            # 校准
-            # d.click(580,550) # Calibration option
-            # self.exitVRApp('settings')
+            # 乐视界看3D视频
+            self.goVRApp('super_lvr')
+            time.sleep(5)
+            d.swipe(2300,640,0,640,10)
+            time.sleep(5)
+            d.click(400,600) # Enter player
+            time.sleep(60)
+            self.exitVRApp('super_lvr')
