@@ -141,7 +141,7 @@ class UnityTest(unittest.TestCase):
         '''
         for i in range(TEST_CYCLE):
             self.CYCLE_NOW = i + 1
-            print "\nCycle now is %s\n=-*-=-*=-*-=-*=-*-=-*=-*-=-*=-*-=-*"%self.CYCLE_NOW
+            print ">>>>>>>>>>>>>>>>\nCycle now is %s\n<<<<<<<<<<<<<<<<"%self.CYCLE_NOW
             # To VR Launcher
             self.goVRApp('launcher')
             print ""
@@ -157,7 +157,7 @@ class UnityTest(unittest.TestCase):
             time.sleep(60)
             self.exitVRApp('local_video')
             str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
-            print str_cmd + "[---------%s----------]"%time.time()
+            print str_cmd + "[---------duration: %s---------]\n"%(time.time()-self.start_time)
             # 看全景视频
             self.goVRApp('local_video')
             d.click(750,710)
@@ -166,7 +166,7 @@ class UnityTest(unittest.TestCase):
             time.sleep(60)
             self.exitVRApp('local_video')
             str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
-            print str_cmd + "[---------%s----------]"%time.time()
+            print str_cmd + "[---------duration: %s---------]\n"%(time.time()-self.start_time)
             # 安装游戏 进入游戏
             self.goVRApp('game_center')
             d.click(640,840) # Only this one could exit by double click on back key
@@ -181,14 +181,14 @@ class UnityTest(unittest.TestCase):
             d.press('back')
             self.exitVRApp('game_center')
             str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
-            print str_cmd + "[---------%s----------]"%time.time()
+            print str_cmd + "[---------duration: %s---------]\n"%(time.time()-self.start_time)
             # 乐视界看全景视频
             self.goVRApp('super_lvr')
             d.click(400,600)
             time.sleep(60)
             self.exitVRApp('super_lvr')
             str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
-            print str_cmd + "[---------%s----------]"%time.time()
+            print str_cmd + "[---------duration: %s---------]\n"%(time.time()-self.start_time)
             # 乐视界看3D视频
             self.goVRApp('super_lvr')
             time.sleep(5)
@@ -198,4 +198,4 @@ class UnityTest(unittest.TestCase):
             time.sleep(60)
             self.exitVRApp('super_lvr')
             str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
-            print str_cmd + "[---------%s----------]"%time.time()
+            print str_cmd + "[---------duration: %s---------]\n"%(time.time()-self.start_time)
