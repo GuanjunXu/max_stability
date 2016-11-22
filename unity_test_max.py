@@ -47,16 +47,17 @@ class UnityTest(unittest.TestCase):
 
     def setUp(self):
         super(UnityTest, self).setUp()
-        # commands.getoutput('adb -s d369f3d6 shell ls /data/local/tmp')
-        commands.getoutput('adb -s d369f3d6 shell touch /data/local/tmp/LVR_MONKEY_TEST')
-        commands.getoutput('adb -s d369f3d6 shell touch /sdcard/LVR_MONKEY_TEST')
+        # commands.getoutput('adb shell ls /data/local/tmp')
+        commands.getoutput('adb shell touch /data/local/tmp/LVR_MONKEY_TEST')
+        commands.getoutput('adb shell touch /sdcard/LVR_MONKEY_TEST')
+        commands.getoutput('adb shell logcat -c')
         self.start_time = int(time.time())
         print 'start: \t%s'%(time.strftime('%Y%m%d_%H%M%S',time.localtime(self.start_time)))
 
     def tearDown(self):
         super(UnityTest, self).tearDown()
         end_time = int(time.time())
-        commands.getoutput('adb -s d369f3d6 shell /system/bin/screencap -p /sdcard/%s.png'%(end_time))
+        commands.getoutput('adb shell /system/bin/screencap -p /sdcard/%s.png'%(end_time))
         duration = end_time - self.start_time
         print 'End at %s'%end_time
         print 'Duration %ss'%(duration)
@@ -66,12 +67,12 @@ class UnityTest(unittest.TestCase):
             os.makedirs(str_path)
         except:
             pass
-        commands.getoutput('adb -s d369f3d6 shell logcat -v time -d > %s/0_logcat_%s.txt'%(str_path,str(int(end_time))))
-        commands.getoutput('adb -s d369f3d6 bugreport > %s/0_bugreport.log'%str_path)
-        commands.getoutput('adb -s d369f3d6 pull /sdcard/%s.png %s/%s'%(end_time,os.getcwd(),str_path))
+        commands.getoutput('adb shell logcat -v time -d > %s/0_logcat_%s.txt'%(str_path,str(int(end_time))))
+        commands.getoutput('adb bugreport > %s/0_bugreport.log'%str_path)
+        commands.getoutput('adb pull /sdcard/%s.png %s/%s'%(end_time,os.getcwd(),str_path))
 
     # def goVRLauncher(self):
-    #     commands.getoutput('adb -s d369f3d6 shell am start -n com.lvr.launcher/.VRLauncherActivity --es pkgName com.lvr.wizzard')
+    #     commands.getoutput('adb shell am start -n com.lvr.launcher/.VRLauncherActivity --es pkgName com.lvr.wizzard')
     #     time.sleep(5)
     #     assert d(packageName = 'com.lvr.launcher').wait.exists(timeout = 3000)
 
@@ -98,7 +99,7 @@ class UnityTest(unittest.TestCase):
     def goVRApp(self, app):
         self.CASE_NOW = app
         print "Testing app: %s"%self.CASE_NOW,
-        commands.getoutput('adb -s d369f3d6 shell am start -n %s'%apps[app][1])
+        commands.getoutput('adb shell am start -n %s'%apps[app][1])
         time.sleep(10)
         assert d(packageName = apps[app][0]).wait.exists()
 
@@ -107,6 +108,7 @@ class UnityTest(unittest.TestCase):
         i = 0
         print "\t ... exit %s ... "%app,
         while d(packageName = apps[app][0]).wait.exists():
+            d.press('back')
             d.press('back')
             i = i + 1
             if i > 10:
@@ -133,39 +135,6 @@ class UnityTest(unittest.TestCase):
             if num > 1:
                 d.press('back')
 
-    def testPlayingVideo(self, cycle=1):
-        '''
-            Playing video
-        '''
-        y = 660
-        x = [370,710] #[370,540,710,880]
-        for i in range(cycle):
-            self.goVRApp('local_video')
-            self.CYCLE_NOW = i + 1
-            x_c = random.choice(x)
-            time.sleep(3)
-            d.click(x_c,y)
-            assert d(packageName = apps['local_video'][0]).wait.exists()
-            time.sleep(3)
-            d.click(600,600)
-            assert d(packageName = apps['local_video'][0]).wait.exists()
-            time.sleep(60)
-            for j in range(6):
-                d.press('back')
-
-    def installAndPlayGame(self,num = 1):
-        for i in range(num):
-            self.installGame()
-            d.click(760,660) # 打开按钮
-            time.sleep(10)
-            for j in range(500): # 游戏内随机点击
-                x = random.choice(range(screen_x))
-                y = random.choice(range(screen_y))
-                d.click(x,y)
-                time.sleep(1)
-            # if num > 1:
-            #     d.press('back')
-
     def testStability(self):
         '''
             Stability
@@ -176,10 +145,10 @@ class UnityTest(unittest.TestCase):
             # To VR Launcher
             self.goVRApp('launcher')
             print ""
-            # 进入设置
-            self.goVRApp('settings')
-            time.sleep(5)
-            self.exitVRApp('settings')
+            # # 进入设置
+            # self.goVRApp('settings')
+            # time.sleep(5)
+            # self.exitVRApp('settings')
             # 看2D视频
             self.goVRApp('local_video')
             d.click(440,710)
@@ -187,6 +156,8 @@ class UnityTest(unittest.TestCase):
             d.click(650,600)
             time.sleep(60)
             self.exitVRApp('local_video')
+            str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
+            print str_cmd + "[---------%s----------]"%time.time()
             # 看全景视频
             self.goVRApp('local_video')
             d.click(750,710)
@@ -194,24 +165,30 @@ class UnityTest(unittest.TestCase):
             d.click(650,600)
             time.sleep(60)
             self.exitVRApp('local_video')
+            str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
+            print str_cmd + "[---------%s----------]"%time.time()
             # 安装游戏 进入游戏
             self.goVRApp('game_center')
             d.click(640,840) # Only this one could exit by double click on back key
             time.sleep(5)
-            d.click(750,660)
+            d.click(750,700)
             # if i == 0:
             #     time.sleep(300)
             #     print "\t ... Installing game ..."
-            #     d.click(750,660)
+            #     d.click(750,700)
             time.sleep(60)
             d.press('back')
             d.press('back')
             self.exitVRApp('game_center')
+            str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
+            print str_cmd + "[---------%s----------]"%time.time()
             # 乐视界看全景视频
             self.goVRApp('super_lvr')
             d.click(400,600)
             time.sleep(60)
             self.exitVRApp('super_lvr')
+            str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
+            print str_cmd + "[---------%s----------]"%time.time()
             # 乐视界看3D视频
             self.goVRApp('super_lvr')
             time.sleep(5)
@@ -220,3 +197,5 @@ class UnityTest(unittest.TestCase):
             d.click(400,600) # Enter player
             time.sleep(60)
             self.exitVRApp('super_lvr')
+            str_cmd=commands.getoutput("adb shell dumpsys battery"%deviceId)
+            print str_cmd + "[---------%s----------]"%time.time()
